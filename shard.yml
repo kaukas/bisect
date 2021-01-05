@@ -1,0 +1,17 @@
+name: bisect
+version: 0.1.0
+
+authors:
+  - Linas <linas@kaukas.net>
+
+targets:
+  bisect:
+    main: src/bisect.cr
+
+development_dependencies:
+  spectator:
+    gitlab: arctic-fox/spectator
+
+crystal: 0.35.1
+
+license: MIT
