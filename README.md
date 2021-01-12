@@ -20,6 +20,38 @@ shards build --release
 ./bin/bisect
 ```
 
+## Example
+
+```bash
+$ ./bin/bisect
+Enter the list of items, one per line, and an empty line at the end:
+1
+2
+3
+
+Consider this list of items:
+1
+2
+3
+
+Are they interesting? Enter + or -: +
+Consider this list of items:
+1
+
+Are they interesting? Enter + or -: -
+Consider this list of items:
+2
+3
+
+Are they interesting? Enter + or -: +
+Consider this list of items:
+2
+
+Are they interesting? Enter + or -: +
+The interesting item:
+2
+```
+
 ## Development
 
 Install with
