@@ -1,22 +1,42 @@
 # bisect
 
-TODO: Write a description here
+Find the interesting item in a list of items.
+
+Ever wanted `git bisect` outside git? This tool performs binary search on a list of items narrowing it until one item remains. Also related to "shirinking" in property based testing.
+
+Currently supports searching for a single item interactively. Automatic mode and other kinds of searches to be implemented.
 
 ## Installation
 
-TODO: Write installation instructions here
+```bash
+git clone https://github.com/kaukas/bisect
+cd bisect
+shards build --release
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+```bash
+./bin/bisect
+```
 
 ## Development
 
-TODO: Write development instructions here
+Install with
+
+```bash
+shards install
+```
+
+Run tests with
+
+```bash
+crystal spec
+```
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/bisect/fork>)
+1. Fork it (<https://github.com/kaukas/bisect/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
@@ -24,4 +44,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [your-name-here](https://github.com/your-github-user) - creator and maintainer
+- [Linas](https://github.com/kaukas) - creator and maintainer
