@@ -6,7 +6,7 @@ authors:
 
 targets:
   bisect:
-    main: src/bisect.cr
+    main: src/cli.cr
 
 development_dependencies:
   spectator:
