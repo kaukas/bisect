@@ -1,3 +1,3 @@
 require "./bisect/cli"
 
-Bisect::Cli.run(STDIN, STDOUT)
+Bisect::Cli.run(STDIN, STDOUT, ARGV)

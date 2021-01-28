@@ -1,44 +1,33 @@
-require "../bisect"
+require "option_parser"
+
+require "./cli/automatic"
+require "./cli/manual"
 
 module Bisect
   module Cli
-    class ExitException < Exception; end
+    def self.run(stdin, stdout, argv)
+      help = false
+      cmd = [] of String
 
-    def self.run(stdin, stdout)
-      stdout.puts(
-        "Enter the list of items, one per line, and an empty line at the end:"
-      )
-      items = [] of String
-      line = stdin.gets
-      while line && !line.empty?
-        items << line.strip
-        line = stdin.gets
+      OptionParser.parse(argv) do |parser|
+        parser.banner = "Usage: bisect <options> [-- verifier-command]"
+
+        parser.on("-h", "--help", "Show this help message") do
+          help = true
+          stdout.puts(parser)
+        end
+
+        parser.unknown_args do |_, after_dash|
+          cmd = after_dash
+        end
       end
-      return if items.empty?
 
-      begin
-        res = Bisect::One.new(items).find do |its|
-          stdout.puts("Consider this list of items:")
-          its.each { |it| stdout.puts(it) }
-          stdout.puts
-          stdout.print("Are they interesting? ")
+      return if help
 
-          line = ""
-          until ["+", "-"].includes?(line)
-            stdout.print("Enter + or -: ")
-            line = stdin.gets
-            raise ExitException.new if line.nil?
-          end
-          line == "+"
-        end
-
-        if res.nil?
-          stdout.puts("No interesting items found.")
-        else
-          stdout.puts("The interesting item:")
-          stdout.puts(res)
-        end
-      rescue ExitException
+      if cmd.empty?
+        Cli::Manual.run(stdin, stdout)
+      else
+        Cli::Automatic.run(stdin, stdout, cmd)
       end
     end
   end
