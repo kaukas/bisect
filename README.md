@@ -42,14 +42,14 @@ Consider this list of items:
 2
 
 Are they interesting? Enter + or -: +
-Consider this list of items:
+Consider this item:
 1
 
-Are they interesting? Enter + or -: -
-Consider this list of items:
+Is it interesting? Enter + or -: -
+Consider this item:
 2
 
-Are they interesting? Enter + or -: +
+Is it interesting? Enter + or -: +
 The interesting item:
 2
 ```
@@ -86,10 +86,10 @@ Consider this list of items:
 2
 
 Are they interesting? Enter + or -: +
-Consider this list of items:
+Consider this item:
 1
 
-Are they interesting? Enter + or -: -
+Is it interesting? Enter + or -: -
 The interesting item:
 2
 ```

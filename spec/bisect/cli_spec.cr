@@ -20,16 +20,23 @@ Spectator.describe Bisect::Cli do
 
   describe "no arguments" do
     it "asks to confirm and prints the winning item" do
-      stdin = IO::Memory.new("3\n\n+\n")
+      stdin = IO::Memory.new("3\n4\n\n+\n-\n+\n")
       stdout = IO::Memory.new
       Bisect::Cli.run(stdin, stdout, [] of String)
       expect(stdout.to_s.lines).to eq([
         "Enter the list of items, one per line, and an empty line at the end:",
         "Consider this list of items:",
         "3",
+        "4",
         "",
-        "Are they interesting? Enter + or -: The interesting item:",
-        "3"
+        "Are they interesting? Enter + or -: Consider this item:",
+        "3",
+        "",
+        "Is it interesting? Enter + or -: Consider this item:",
+        "4",
+        "",
+        "Is it interesting? Enter + or -: The interesting item:",
+        "4"
       ])
     end
 

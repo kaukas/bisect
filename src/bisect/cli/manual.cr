@@ -16,10 +16,14 @@ module Bisect
 
         begin
           res = Bisect::One.find(strategy_cls, items) do |its|
-            stdout.puts("Consider this list of items:")
+            stdout.puts(its.size > 1 ?
+                        "Consider this list of items:" :
+                        "Consider this item:")
             its.each { |it| stdout.puts(it) }
             stdout.puts
-            stdout.print("Are they interesting? ")
+            stdout.print(its.size > 1 ?
+                         "Are they interesting? " :
+                         "Is it interesting? ")
 
             line = ""
             until ["+", "-"].includes?(line)
