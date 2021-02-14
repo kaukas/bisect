@@ -6,14 +6,14 @@ Spectator.describe Bisect::Cli do
     it "prints help on -h" do
       stdin = IO::Memory.new
       stdout = IO::Memory.new
-      Bisect::Cli.run(stdin, stdout, ["-h"] of String)
+      Bisect::Cli.run(stdin, stdout, ["-h"])
       expect(stdout.to_s.lines[0]).to start_with("Usage")
     end
 
     it "prints help on --help" do
       stdin = IO::Memory.new
       stdout = IO::Memory.new
-      Bisect::Cli.run(stdin, stdout, ["--help"] of String)
+      Bisect::Cli.run(stdin, stdout, ["--help"])
       expect(stdout.to_s.lines[0]).to start_with("Usage")
     end
   end
@@ -59,13 +59,21 @@ Spectator.describe Bisect::Cli do
     it "runs the command to find the interesting item" do
       stdin = IO::Memory.new("3\n4\n")
       stdout = IO::Memory.new
-      Bisect::Cli.run(stdin, stdout, ["--", "bash", "-c", "! grep 4"] of String)
+      Bisect::Cli.run(stdin, stdout, ["--", "bash", "-c", "! grep 4"])
       expect(stdout.to_s.lines).to eq(["The interesting item:", "4"])
     end
+  end
 
-    # TODO
-    # it "inherits command standard error" do
-    #
-    # end
+  describe "with trust" do
+    it "assumes the only item is interesting" do
+      stdin = IO::Memory.new("3\n\n")
+      stdout = IO::Memory.new
+      Bisect::Cli.run(stdin, stdout, ["--trust"])
+      expect(stdout.to_s.lines).to eq([
+        "Enter the list of items, one per line, and an empty line at the end:",
+        "The interesting item:",
+        "3"
+      ])
+    end
   end
 end

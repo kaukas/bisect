@@ -3,13 +3,13 @@ require "../../bisect"
 module Bisect
   module Cli
     module Automatic
-      def self.run(stdin, stdout, cmd)
+      def self.run(stdin, stdout, cmd, strategy_cls)
         items = Iterator.of { stdin.gets }.
           take_while { |line| line && !line.empty? }.
           to_a
         return if items.empty?
 
-        res = Bisect::One.new(items).find do |its|
+        res = Bisect::One.find(strategy_cls, items) do |its|
           input = IO::Memory.new(its.join("\n"))
           success = Process.run(cmd[0],
                                 cmd[1..],

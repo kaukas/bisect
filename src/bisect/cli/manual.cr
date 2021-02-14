@@ -5,7 +5,7 @@ module Bisect
     module Manual
       class ExitException < Exception; end
 
-      def self.run(stdin, stdout)
+      def self.run(stdin, stdout, strategy_cls)
         stdout.puts(
           "Enter the list of items, one per line, and an empty line at the end:"
         )
@@ -15,7 +15,7 @@ module Bisect
         return if items.empty?
 
         begin
-          res = Bisect::One.new(items).find do |its|
+          res = Bisect::One.find(strategy_cls, items) do |its|
             stdout.puts("Consider this list of items:")
             its.each { |it| stdout.puts(it) }
             stdout.puts
