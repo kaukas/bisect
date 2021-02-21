@@ -3,7 +3,7 @@ module Bisect
     module Manual
       class ExitException < Exception; end
 
-      def self.run(stdin, stdout, strategy, printer)
+      def self.run(stdin, stdout, mode, printer)
         stdout.puts(
           "Enter the list of items, one per line, and an empty line at the end:"
         )
@@ -13,7 +13,7 @@ module Bisect
         return if items.empty?
 
         begin
-          res = strategy.find(items) do |its|
+          res = mode.find(items) do |its|
             its = [its] unless its.is_a?(Array)
 
             stdout.puts(its.size > 1 ?

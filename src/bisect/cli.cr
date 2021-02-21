@@ -58,22 +58,22 @@ module Bisect
 
       return if help
 
-      strategy, printer = case [mode, trust]
-                          when [Mode::One, Trust::Low]
-                            {FindOneLowTrust, OneItemPrinter}
-                          when [Mode::One, Trust::High]
-                            {FindOneHighTrust, OneItemPrinter}
-                          when [Mode::First, Trust::Low]
-                            {FindFirstLowTrust, FirstItemPrinter}
-                          when [Mode::First, Trust::High]
-                            {FindFirstHighTrust, FirstItemPrinter}
-                          else
-                            raise "Unknown mode and trust"
-                          end
+      mode_cls, printer_cls = case [mode, trust]
+                              when [Mode::One, Trust::Low]
+                                {FindOneLowTrust, OneItemPrinter}
+                              when [Mode::One, Trust::High]
+                                {FindOneHighTrust, OneItemPrinter}
+                              when [Mode::First, Trust::Low]
+                                {FindFirstLowTrust, FirstItemPrinter}
+                              when [Mode::First, Trust::High]
+                                {FindFirstHighTrust, FirstItemPrinter}
+                              else
+                                raise "Unknown mode and trust"
+                              end
       if cmd.empty?
-        Cli::Manual.run(stdin, stdout, strategy, printer)
+        Cli::Manual.run(stdin, stdout, mode_cls, printer_cls)
       else
-        Cli::Automatic.run(stdin, stdout, cmd, strategy, printer)
+        Cli::Automatic.run(stdin, stdout, cmd, mode_cls, printer_cls)
       end
     end
   end

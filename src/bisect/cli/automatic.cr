@@ -1,13 +1,13 @@
 module Bisect
   module Cli
     module Automatic
-      def self.run(stdin, stdout, cmd, strategy, printer)
+      def self.run(stdin, stdout, cmd, mode, printer)
         items = Iterator.of { stdin.gets }.
           take_while { |line| line && !line.empty? }.
           to_a
         return if items.empty?
 
-        res = strategy.find(items) do |its|
+        res = mode.find(items) do |its|
           its = [its] unless its.is_a?(Array)
 
           input = IO::Memory.new(its.join("\n"))
