@@ -1,7 +1,7 @@
-require "./no_trust_strategy"
+require "./find_one_low_trust"
 
 module Bisect
-  class TrustStrategy < NoTrustStrategy
+  class FindOneHighTrust < FindOneLowTrust
     def self.find(items)
       deduced : Bool | Nil = true
       super(items) do |subset|

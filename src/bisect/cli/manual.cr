@@ -1,11 +1,9 @@
-require "../../bisect"
-
 module Bisect
   module Cli
     module Manual
       class ExitException < Exception; end
 
-      def self.run(stdin, stdout, strategy_cls)
+      def self.run(stdin, stdout, strategy, printer)
         stdout.puts(
           "Enter the list of items, one per line, and an empty line at the end:"
         )
@@ -15,7 +13,9 @@ module Bisect
         return if items.empty?
 
         begin
-          res = Bisect::One.find(strategy_cls, items) do |its|
+          res = strategy.find(items) do |its|
+            its = [its] unless its.is_a?(Array)
+
             stdout.puts(its.size > 1 ?
                         "Consider this list of items:" :
                         "Consider this item:")
@@ -34,12 +34,7 @@ module Bisect
             line == "+"
           end
 
-          if res.nil?
-            stdout.puts("No interesting items found.")
-          else
-            stdout.puts("The interesting item:")
-            stdout.puts(res)
-          end
+          stdout.puts(printer.final_message(res))
         rescue ExitException
         end
       end

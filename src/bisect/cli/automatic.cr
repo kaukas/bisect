@@ -1,15 +1,15 @@
-require "../../bisect"
-
 module Bisect
   module Cli
     module Automatic
-      def self.run(stdin, stdout, cmd, strategy_cls)
+      def self.run(stdin, stdout, cmd, strategy, printer)
         items = Iterator.of { stdin.gets }.
           take_while { |line| line && !line.empty? }.
           to_a
         return if items.empty?
 
-        res = Bisect::One.find(strategy_cls, items) do |its|
+        res = strategy.find(items) do |its|
+          its = [its] unless its.is_a?(Array)
+
           input = IO::Memory.new(its.join("\n"))
           success = Process.run(cmd[0],
                                 cmd[1..],
@@ -19,12 +19,7 @@ module Bisect
           !success
         end
 
-        if res.nil?
-          stdout.puts("No interesting items found.")
-        else
-          stdout.puts("The interesting item:")
-          stdout.puts(res)
-        end
+        stdout.puts(printer.final_message(res))
       end
     end
   end

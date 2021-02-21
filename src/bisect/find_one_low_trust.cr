@@ -1,13 +1,27 @@
 module Bisect
-  module Indices
-    def self.find(size) : Int32 | Nil
+  class FindOneLowTrust
+    def self.find(items)
+      indices(items.size) do |left, right|
+        subset = items[left..right]
+        found = yield(subset)
+        if left == right && found
+          return subset.first
+        else
+          found
+        end
+      end
+
+      nil
+    end
+
+    def self.indices(size) : Int32 | Nil
       return if size.zero?
 
       bounds = {0, size - 1}
       other = nil
       loop do
-        found = yield(bounds)
-        if found
+        interesting = yield(bounds)
+        if interesting
           if bounds[0] == bounds[1]
             return bounds[0]
           else

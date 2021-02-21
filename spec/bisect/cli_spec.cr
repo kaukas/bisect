@@ -83,4 +83,23 @@ Spectator.describe Bisect::Cli do
       ])
     end
   end
+
+  describe "first mode" do
+    it "asks to confirm one item at a time" do
+      stdin = IO::Memory.new("3\n4\n\n-\n+\n")
+      stdout = IO::Memory.new
+      Bisect::Cli.run(stdin, stdout, ["--mode", "first"])
+      expect(stdout.to_s.lines).to eq([
+        "Enter the list of items, one per line, and an empty line at the end:",
+        "Consider this item:",
+        "3",
+        "",
+        "Is it interesting? Enter + or -: Consider this item:",
+        "4",
+        "",
+        "Is it interesting? Enter + or -: The first interesting item:",
+        "4"
+      ])
+    end
+  end
 end
