@@ -5,7 +5,7 @@ module Bisect
         if item.nil?
           "No interesting items found."
         else
-          "The first interesting item at line #{index}:\n#{item}"
+          "The first interesting item:\n#{item}\nAt line #{index}"
         end
       end
     end

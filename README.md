@@ -58,8 +58,9 @@ Consider this item:
 2
 
 Is it interesting? Enter + or -: +
-The interesting item at line 2:
+The interesting item:
 2
+At line 2
 ```
 
 Note that line numbers are 1-based.
@@ -76,8 +77,9 @@ For example
 
 ```bash
 $ echo -e "1\n2\n3" | ./bin/bisect -- bash -c "! grep 3"
-The interesting item at line 3:
+The interesting item:
 3
+At line 3
 ```
 
 Line numbers are 1-based, too.
@@ -106,8 +108,9 @@ Consider this item:
 1
 
 Is it interesting? Enter + or -: -
-The interesting item at line 2:
+The interesting item:
 2
+At line 2
 ```
 
 ### Mode "first"
