@@ -7,7 +7,7 @@ module Bisect
           to_a
         return if items.empty?
 
-        res = mode.find(items) do |its|
+        item, index = mode.find(items) do |its|
           its = [its] unless its.is_a?(Array)
 
           input = IO::Memory.new(its.join("\n"))
@@ -19,7 +19,7 @@ module Bisect
           !success
         end
 
-        stdout.puts(printer.final_message(res))
+        stdout.puts(printer.final_message(item, index))
       end
     end
   end

@@ -35,7 +35,7 @@ Spectator.describe Bisect::Cli do
         "Is it interesting? Enter + or -: Consider this item:",
         "4",
         "",
-        "Is it interesting? Enter + or -: The interesting item:",
+        "Is it interesting? Enter + or -: The interesting item at line 2:",
         "4"
       ])
     end
@@ -58,7 +58,7 @@ Spectator.describe Bisect::Cli do
       stdin = IO::Memory.new("3\n4\n\n+\n+\n")
       stdout = IO::Memory.new
       Bisect::Cli.run(stdin, stdout, [] of String)
-      expect(stdout.to_s).to end_with("The interesting item:\n3\n")
+      expect(stdout.to_s).to end_with("The interesting item at line 1:\n3\n")
     end
   end
 
@@ -67,7 +67,7 @@ Spectator.describe Bisect::Cli do
       stdin = IO::Memory.new("3\n4\n")
       stdout = IO::Memory.new
       Bisect::Cli.run(stdin, stdout, ["--", "bash", "-c", "! grep 4"])
-      expect(stdout.to_s.lines).to eq(["The interesting item:", "4"])
+      expect(stdout.to_s.lines).to eq(["The interesting item at line 2:", "4"])
     end
   end
 
@@ -78,7 +78,7 @@ Spectator.describe Bisect::Cli do
       Bisect::Cli.run(stdin, stdout, ["--trust"])
       expect(stdout.to_s.lines).to eq([
         "Enter the list of items, one per line, and an empty line at the end:",
-        "The interesting item:",
+        "The interesting item at line 1:",
         "3"
       ])
     end
@@ -97,7 +97,7 @@ Spectator.describe Bisect::Cli do
         "Is it interesting? Enter + or -: Consider this item:",
         "4",
         "",
-        "Is it interesting? Enter + or -: The first interesting item:",
+        "Is it interesting? Enter + or -: The first interesting item at line 2:",
         "4"
       ])
     end

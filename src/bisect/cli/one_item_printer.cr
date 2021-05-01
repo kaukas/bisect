@@ -1,11 +1,11 @@
 module Bisect
   module Cli
     module OneItemPrinter
-      def self.final_message(res)
-        if res.nil?
+      def self.final_message(item, index)
+        if item.nil?
           "No interesting items found."
         else
-          "The interesting item:\n#{res}"
+          "The interesting item at line #{index}:\n#{item}"
         end
       end
     end

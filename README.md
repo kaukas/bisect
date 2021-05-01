@@ -57,9 +57,11 @@ Consider this item:
 2
 
 Is it interesting? Enter + or -: +
-The interesting item:
+The interesting item at line 2:
 2
 ```
+
+Note that line numbers are 1-based.
 
 ### Automatic
 
@@ -73,9 +75,11 @@ For example
 
 ```bash
 $ echo -e "1\n2\n3" | ./bin/bisect -- bash -c "! grep 3"
-The interesting item:
+The interesting item at line 3:
 3
 ```
+
+Line numbers are 1-based, too.
 
 ### Mode "one"
 
@@ -101,7 +105,7 @@ Consider this item:
 1
 
 Is it interesting? Enter + or -: -
-The interesting item:
+The interesting item at line 2:
 2
 ```
 

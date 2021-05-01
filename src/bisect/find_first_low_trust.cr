@@ -5,7 +5,7 @@ module Bisect
         yield(items[index])
       end
 
-      index ? items[index] : nil
+      index ? [items[index], index + 1] : [nil, nil]
     end
 
     def self.indices(size) : Int32 | Nil

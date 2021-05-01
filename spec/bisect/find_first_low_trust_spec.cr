@@ -4,28 +4,32 @@ require "../../src/bisect/find_first_low_trust"
 Spectator.describe Bisect::FindFirstLowTrust do
   describe "#find" do
     it "returns nil for an empty array" do
-      expect(Bisect::FindFirstLowTrust.find([] of Int32) { false }).to eq(nil)
-      expect(Bisect::FindFirstLowTrust.find([] of Int32) { true }).to eq(nil)
+      expect(Bisect::FindFirstLowTrust.find([] of Int32) { false }).
+        to eq([nil, nil])
+      expect(Bisect::FindFirstLowTrust.find([] of Int32) { true }).
+        to eq([nil, nil])
     end
 
     it "returns the only item" do
-      expect(Bisect::FindFirstLowTrust.find([3]) { true }).to eq(3)
+      expect(Bisect::FindFirstLowTrust.find([3]) { true }).to eq([3, 1])
     end
 
     it "returns nothing if nothing is interesting" do
-      expect(Bisect::FindFirstLowTrust.find([3]) { false }).to eq(nil)
+      expect(Bisect::FindFirstLowTrust.find([3]) { false }).to eq([nil, nil])
     end
 
     it "returns the single interesting item" do
-      output = Bisect::FindFirstLowTrust.find([3, 4]) { |item| item == 4 }
-      expect(output).to eq(4)
+      item, index = Bisect::FindFirstLowTrust.find([3, 4]) { |item| item == 4 }
+      expect(item).to eq(4)
+      expect(index).to eq(2)
     end
 
     it "handles an odd number of items" do
-      output = Bisect::FindFirstLowTrust.find([3, 4, 5]) do |item|
+      item, index = Bisect::FindFirstLowTrust.find([3, 4, 5]) do |item|
         item >= 4
       end
-      expect(output).to eq(4)
+      expect(item).to eq(4)
+      expect(index).to eq(2)
     end
   end
 

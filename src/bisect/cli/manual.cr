@@ -13,7 +13,7 @@ module Bisect
         return if items.empty?
 
         begin
-          res = mode.find(items) do |its|
+          item, index = mode.find(items) do |its|
             its = [its] unless its.is_a?(Array)
 
             stdout.puts(its.size > 1 ?
@@ -34,7 +34,7 @@ module Bisect
             line == "+"
           end
 
-          stdout.puts(printer.final_message(res))
+          stdout.puts(printer.final_message(item, index))
         rescue ExitException
         end
       end

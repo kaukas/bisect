@@ -5,13 +5,13 @@ module Bisect
         subset = items[left..right]
         found = yield(subset)
         if left == right && found
-          return subset.first
+          return [subset.first, left + 1]
         else
           found
         end
       end
 
-      nil
+      [nil, nil]
     end
 
     def self.indices(size) : Int32 | Nil

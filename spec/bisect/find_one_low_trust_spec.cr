@@ -4,35 +4,39 @@ require "../../src/bisect/find_one_low_trust"
 Spectator.describe Bisect::FindOneLowTrust do
   describe "#find" do
     it "returns nil for an empty array" do
-      expect(Bisect::FindOneLowTrust.find([] of Int32) { false }).to eq(nil)
-      expect(Bisect::FindOneLowTrust.find([] of Int32) { true }).to eq(nil)
+      expect(Bisect::FindOneLowTrust.find([] of Int32) { false }).
+        to eq([nil, nil])
+      expect(Bisect::FindOneLowTrust.find([] of Int32) { true }).
+        to eq([nil, nil])
     end
 
     it "returns the only item" do
-      expect(Bisect::FindOneLowTrust.find([3]) { true }).to eq(3)
+      expect(Bisect::FindOneLowTrust.find([3]) { true }).to eq([3, 1])
     end
 
     it "returns nothing if nothing is interesting" do
-      expect(Bisect::FindOneLowTrust.find([3]) { false }).to eq(nil)
+      expect(Bisect::FindOneLowTrust.find([3]) { false }).to eq([nil, nil])
     end
 
     it "returns the single interesting item" do
       subsets = [] of Array(Int32)
-      output = Bisect::FindOneLowTrust.find([3, 4]) do |subset|
+      item, index = Bisect::FindOneLowTrust.find([3, 4]) do |subset|
         subsets << subset
         subset.includes?(4)
       end
-      expect(output).to eq(4)
+      expect(item).to eq(4)
+      expect(index).to eq(2)
       expect(subsets).to eq([[3, 4], [3], [4]])
     end
 
     it "handles an odd number of items" do
       subsets = [] of Array(Int32)
-      output = Bisect::FindOneLowTrust.find([3, 4, 5]) do |subset|
+      item, index = Bisect::FindOneLowTrust.find([3, 4, 5]) do |subset|
         subsets << subset
         subset.includes?(4)
       end
-      expect(output).to eq(4)
+      expect(item).to eq(4)
+      expect(index).to eq(2)
       expect(subsets).to eq([[3, 4, 5], [3, 4], [3], [4]])
     end
   end
