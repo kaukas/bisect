@@ -97,7 +97,56 @@ Spectator.describe Bisect::Cli do
         "Is it interesting? Enter + or -: Consider this item:",
         "4",
         "",
-        "Is it interesting? Enter + or -: The first interesting item at line 2:",
+        "Is it interesting? Enter + or -: " \
+        "The first interesting item at line 2:",
+        "4"
+      ])
+    end
+
+    it "skips confirmation of the last item in high trust" do
+      stdin = IO::Memory.new("3\n4\n\n-\n")
+      stdout = IO::Memory.new
+      Bisect::Cli.run(stdin, stdout, ["--mode", "first", "--trust"])
+      expect(stdout.to_s.lines).to eq([
+        "Enter the list of items, one per line, and an empty line at the end:",
+        "Consider this item:",
+        "3",
+        "",
+        "Is it interesting? Enter + or -: " \
+        "The first interesting item at line 2:",
+        "4"
+      ])
+    end
+  end
+
+  describe "last mode" do
+    it "asks to confirm one item at a time" do
+      stdin = IO::Memory.new("3\n4\n\n+\n+\n")
+      stdout = IO::Memory.new
+      Bisect::Cli.run(stdin, stdout, ["--mode", "last"])
+      expect(stdout.to_s.lines).to eq([
+        "Enter the list of items, one per line, and an empty line at the end:",
+        "Consider this item:",
+        "3",
+        "",
+        "Is it interesting? Enter + or -: Consider this item:",
+        "4",
+        "",
+        "Is it interesting? Enter + or -: The last interesting item at line 2:",
+        "4"
+      ])
+    end
+
+    it "skips confirmation of the first item in high trust" do
+      stdin = IO::Memory.new("3\n4\n\n+\n")
+      stdout = IO::Memory.new
+      Bisect::Cli.run(stdin, stdout, ["--mode", "last", "--trust"])
+      expect(stdout.to_s.lines).to eq([
+        "Enter the list of items, one per line, and an empty line at the end:",
+        "Consider this item:",
+        "4",
+        "",
+        "Is it interesting? Enter + or -: The last interesting item at line 2:",
         "4"
       ])
     end
