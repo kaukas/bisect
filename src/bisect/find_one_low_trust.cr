@@ -1,6 +1,8 @@
 module Bisect
   class FindOneLowTrust(T)
-    def initialize(@items : Array(T))
+    def initialize(@items : Array(T), max_batch_size : Int32? = nil)
+      @all_bounds = [] of Tuple(Int32, Int32)
+      @max_batch_size = max_batch_size
     end
 
     def find
@@ -17,31 +19,20 @@ module Bisect
       [nil, nil]
     end
 
-    def indices : Int32 | Nil
-      return if @items.size.zero?
+    def indices : Int32?
+      size = @max_batch_size || @items.size
+      return if size.zero?
 
-      bounds = {0, @items.size - 1}
-      other = nil
-      loop do
-        interesting = yield(bounds)
-        if interesting
-          if bounds[0] == bounds[1]
-            return bounds[0]
-          else
-            middle = (bounds[0] + bounds[1]) // 2
-            other = {middle + 1, bounds[1]}
-            bounds = {bounds[0], middle}
-          end
-        else
-          if other.nil?
-            # Perhaps the checking block is impure and changed its mind. Or
-            # perhaps it depends on more than one item so no one item satisfies
-            # it.
-            return
-          else
-            bounds, other = other, nil
-          end
-        end
+      @all_bounds = (0...(@items.size / size)).map do |i|
+        {i * size, Math.min((i + 1) * size, @items.size) - 1}
+      end.to_a
+
+      while (bounds = @all_bounds.shift?)
+        next unless yield(bounds) # Skip uninteresting
+        return bounds[0] if bounds[0] == bounds[1] # Found it!
+
+        middle = (bounds[0] + bounds[1]) // 2
+        @all_bounds = [{bounds[0], middle}, {middle + 1, bounds[1]}]
       end
     end
   end

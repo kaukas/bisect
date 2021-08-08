@@ -39,6 +39,17 @@ Spectator.describe Bisect::FindOneLowTrust do
       expect(index).to eq(2)
       expect(subsets).to eq([[3, 4, 5], [3, 4], [3], [4]])
     end
+
+    it "can confirm a limited number of items at a time" do
+      subsets = [] of Array(Int32)
+      item, index = Bisect::FindOneLowTrust.new([3, 4, 5], 2).find do |subset|
+        subsets << subset
+        subset.includes?(5)
+      end
+      expect(item).to eq(5)
+      expect(index).to eq(3)
+      expect(subsets).to eq([[3, 4], [5]])
+    end
   end
 
   describe "#indices" do
@@ -76,6 +87,19 @@ Spectator.describe Bisect::FindOneLowTrust do
       end
       expect(output).to eq(2)
       expect(indices).to eq([{0, 2}, {0, 1}, {2, 2}])
+    end
+
+    it "can confirm a limited number of items at a time" do
+      results = [false, # only two items - uninteresting
+                 true, # items 3 and 4 - interesting
+                 true] # item 3 - interesting
+      indices = [] of Tuple(Int32, Int32)
+      output = Bisect::FindOneLowTrust.new([1] * 5, 2).indices do |left, right|
+        indices << {left, right}
+        results.shift
+      end
+      expect(indices).to eq([{0, 1}, {2, 3}, {2, 2}])
+      expect(output).to eq(2)
     end
   end
 end

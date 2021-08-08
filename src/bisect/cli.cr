@@ -1,5 +1,15 @@
 require "option_parser"
 
+require "./find_one_low_trust"
+require "./find_one_high_trust"
+require "./find_first_low_trust"
+require "./find_first_high_trust"
+require "./find_last_low_trust"
+require "./find_last_high_trust"
+
+require "./cli/one_item_printer"
+require "./cli/first_item_printer"
+require "./cli/last_item_printer"
 require "./cli/automatic"
 require "./cli/manual"
 
@@ -18,6 +28,7 @@ module Bisect
 
     def self.run(stdin, stdout, argv)
       help = false
+      max_batch_size = nil
       mode = Mode::One
       trust = Trust::Low
       cmd = [] of String
@@ -28,6 +39,13 @@ module Bisect
         parser.on("-h", "--help", "Show this help message.") do
           help = true
           stdout.puts(parser)
+        end
+
+        parser.on(
+          "--max-batch-size=MAX_BATCH_SIZE",
+          "Maximum size of the batch to confirm. Unlimited by default."
+        ) do |s|
+          max_batch_size = s.to_i
         end
 
         parser.on(
@@ -64,10 +82,52 @@ module Bisect
 
       return if help
 
+      items = if cmd.empty?
+                Cli::Manual.read_items(stdin, stdout)
+              else
+                Cli::Automatic.read_items(stdin, stdout)
+              end
+      return if items.empty?
+
+      finder = pick_finder(mode, trust, max_batch_size, items)
+      printer = pick_printer(mode)
+
       if cmd.empty?
-        Cli::Manual.run(stdin, stdout, mode, trust)
+        Cli::Manual.run(stdin, stdout, finder, printer)
       else
-        Cli::Automatic.run(stdin, stdout, cmd, mode, trust)
+        Cli::Automatic.run(stdin, stdout, cmd, finder, printer)
+      end
+    end
+
+    def self.pick_finder(mode, trust, max_batch_size, items)
+      case [mode, trust]
+      when [Mode::One, Trust::Low]
+        FindOneLowTrust.new(items, max_batch_size)
+      when [Mode::One, Trust::High]
+        FindOneHighTrust.new(items, max_batch_size)
+      when [Mode::First, Trust::Low]
+        FindFirstLowTrust.new(items)
+      when [Mode::First, Trust::High]
+        FindFirstHighTrust.new(items)
+      when [Mode::Last, Trust::Low]
+        FindLastLowTrust.new(items)
+      when [Mode::Last, Trust::High]
+        FindLastHighTrust.new(items)
+      else
+        raise "Unknown mode #{mode} and trust #{trust}"
+      end
+    end
+
+    def self.pick_printer(mode)
+      case mode
+      when Mode::One
+        OneItemPrinter
+      when Mode::First
+        FirstItemPrinter
+      when Mode::Last
+        LastItemPrinter
+      else
+        raise "Unknown mode #{mode}"
       end
     end
   end

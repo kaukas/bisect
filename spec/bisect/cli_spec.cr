@@ -157,4 +157,28 @@ Spectator.describe Bisect::Cli do
       ])
     end
   end
+
+  describe "batch size" do
+    it "asks to confirm no more than the speficied amount of items" do
+      stdin = IO::Memory.new("3\n4\n5\n\n+\n-\n+\n")
+      stdout = IO::Memory.new
+      Bisect::Cli.run(stdin, stdout, ["--max-batch-size", "2"])
+      expect(stdout.to_s.lines).to eq([
+        "Enter the list of items, one per line, and an empty line at the end:",
+        "Consider this list of items:",
+        "3",
+        "4",
+        "",
+        "Are they interesting? Enter + or -: Consider this item:",
+        "3",
+        "",
+        "Is it interesting? Enter + or -: Consider this item:",
+        "4",
+        "",
+        "Is it interesting? Enter + or -: The interesting item:",
+        "4",
+        "At line 2"
+      ])
+    end
+  end
 end

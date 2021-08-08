@@ -11,7 +11,7 @@ module Bisect
       index ? [@items[index], index + 1] : [nil, nil]
     end
 
-    def indices : Int32 | Nil
+    def indices : Int32?
       return if @items.size.zero?
       return 0 if yield(0)
       return if !yield(@items.size - 1)

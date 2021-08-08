@@ -3,15 +3,10 @@ require "./find_one_low_trust"
 module Bisect
   class FindOneHighTrust(T) < FindOneLowTrust(T)
     def find
-      deduced : Bool | Nil = true
       super do |subset|
-        if deduced.nil?
-          interesting = yield(subset)
-          deduced = true if !interesting
-        else
-          interesting, deduced = deduced, nil
-        end
-        interesting
+        # Checking the last bound since we trust it will contain the interesting
+        # item.
+        @all_bounds.empty? || yield(subset)
       end
     end
   end

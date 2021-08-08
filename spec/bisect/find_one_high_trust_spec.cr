@@ -28,5 +28,16 @@ Spectator.describe Bisect::FindOneHighTrust do
       expect(item).to eq(4)
       expect(index).to eq(2)
     end
+
+    it "can confirm a limited number of items at a time" do
+      subsets = [] of Array(Int32)
+      item, idx = Bisect::FindOneHighTrust.new((1..5).to_a, 2).find do |subset|
+        subsets << subset
+        subset.includes?(5)
+      end
+      expect(subsets).to eq([[1, 2], [3, 4]])
+      expect(item).to eq(5)
+      expect(idx).to eq(5)
+    end
   end
 end
