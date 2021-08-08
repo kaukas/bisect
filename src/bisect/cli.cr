@@ -34,7 +34,11 @@ module Bisect
       cmd = [] of String
 
       OptionParser.parse(argv) do |parser|
-        parser.banner = "Usage: bisect <options> [-- verifier-command]"
+        parser.banner = <<-DOC
+        Usage: bisect <options> [-- verifier-command]
+
+        Options:
+        DOC
 
         parser.on("-h", "--help", "Show this help message.") do
           help = true
