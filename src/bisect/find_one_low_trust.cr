@@ -1,8 +1,11 @@
 module Bisect
-  class FindOneLowTrust
-    def self.find(items)
-      indices(items.size) do |left, right|
-        subset = items[left..right]
+  class FindOneLowTrust(T)
+    def initialize(@items : Array(T))
+    end
+
+    def find
+      indices do |left, right|
+        subset = @items[left..right]
         found = yield(subset)
         if left == right && found
           return [subset.first, left + 1]
@@ -14,10 +17,10 @@ module Bisect
       [nil, nil]
     end
 
-    def self.indices(size) : Int32 | Nil
-      return if size.zero?
+    def indices : Int32 | Nil
+      return if @items.size.zero?
 
-      bounds = {0, size - 1}
+      bounds = {0, @items.size - 1}
       other = nil
       loop do
         interesting = yield(bounds)

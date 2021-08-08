@@ -1,13 +1,16 @@
+require "./finder_picker"
+
 module Bisect
   module Cli
     module Automatic
-      def self.run(stdin, stdout, cmd, mode, printer)
+      def self.run(stdin, stdout, cmd, mode, trust)
         items = Iterator.of { stdin.gets }.
           take_while { |line| line && !line.empty? }.
           to_a
         return if items.empty?
 
-        item, index = mode.find(items) do |its|
+        finder, printer = FinderPicker.pick_finder(mode, trust, items)
+        item, index = finder.find do |its|
           its = [its] unless its.is_a?(Array)
 
           input = IO::Memory.new(its.join("\n"))

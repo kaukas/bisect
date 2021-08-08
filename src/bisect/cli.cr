@@ -1,17 +1,7 @@
 require "option_parser"
 
-require "./find_first_low_trust"
-require "./find_first_high_trust"
-require "./find_one_low_trust"
-require "./find_one_high_trust"
-require "./find_last_low_trust"
-require "./find_last_high_trust"
-
 require "./cli/automatic"
 require "./cli/manual"
-require "./cli/one_item_printer"
-require "./cli/first_item_printer"
-require "./cli/last_item_printer"
 
 module Bisect
   module Cli
@@ -74,26 +64,10 @@ module Bisect
 
       return if help
 
-      mode_cls, printer_cls = case [mode, trust]
-                              when [Mode::One, Trust::Low]
-                                {FindOneLowTrust, OneItemPrinter}
-                              when [Mode::One, Trust::High]
-                                {FindOneHighTrust, OneItemPrinter}
-                              when [Mode::First, Trust::Low]
-                                {FindFirstLowTrust, FirstItemPrinter}
-                              when [Mode::First, Trust::High]
-                                {FindFirstHighTrust, FirstItemPrinter}
-                              when [Mode::Last, Trust::Low]
-                                {FindLastLowTrust, LastItemPrinter}
-                              when [Mode::Last, Trust::High]
-                                {FindLastHighTrust, LastItemPrinter}
-                              else
-                                raise "Unknown mode #{mode} and trust #{trust}"
-                              end
       if cmd.empty?
-        Cli::Manual.run(stdin, stdout, mode_cls, printer_cls)
+        Cli::Manual.run(stdin, stdout, mode, trust)
       else
-        Cli::Automatic.run(stdin, stdout, cmd, mode_cls, printer_cls)
+        Cli::Automatic.run(stdin, stdout, cmd, mode, trust)
       end
     end
   end

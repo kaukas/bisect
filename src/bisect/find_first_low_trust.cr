@@ -1,19 +1,22 @@
 module Bisect
-  class FindFirstLowTrust
-    def self.find(items)
-      index = indices(items.size) do |index|
-        yield(items[index])
-      end
-
-      index ? [items[index], index + 1] : [nil, nil]
+  class FindFirstLowTrust(T)
+    def initialize(@items : Array(T))
     end
 
-    def self.indices(size) : Int32 | Nil
-      return if size.zero?
-      return 0 if yield(0)
-      return if !yield(size - 1)
+    def find
+      index = indices do |index|
+        yield(@items[index])
+      end
 
-      bounds = {0, size - 1}
+      index ? [@items[index], index + 1] : [nil, nil]
+    end
+
+    def indices : Int32 | Nil
+      return if @items.size.zero?
+      return 0 if yield(0)
+      return if !yield(@items.size - 1)
+
+      bounds = {0, @items.size - 1}
 
       loop do
         middle = (bounds[0] + bounds[1]) // 2

@@ -1,8 +1,9 @@
 require "./find_first_low_trust"
 
 module Bisect
-  class FindLastLowTrust < FindFirstLowTrust
-    def self.indices(size) : Int32 | Nil
+  class FindLastLowTrust(T) < FindFirstLowTrust(T)
+    def indices : Int32 | Nil
+      size = @items.size
       return if size.zero?
       return if !yield(0)
       return size - 1 if yield(size - 1)

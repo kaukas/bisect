@@ -1,10 +1,10 @@
 require "./find_one_low_trust"
 
 module Bisect
-  class FindOneHighTrust < FindOneLowTrust
-    def self.find(items)
+  class FindOneHighTrust(T) < FindOneLowTrust(T)
+    def find
       deduced : Bool | Nil = true
-      super(items) do |subset|
+      super do |subset|
         if deduced.nil?
           interesting = yield(subset)
           deduced = true if !interesting

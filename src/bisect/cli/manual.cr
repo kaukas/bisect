@@ -1,9 +1,11 @@
+require "./finder_picker"
+
 module Bisect
   module Cli
     module Manual
       class ExitException < Exception; end
 
-      def self.run(stdin, stdout, mode, printer)
+      def self.run(stdin, stdout, mode, trust)
         stdout.puts(
           "Enter the list of items, one per line, and an empty line at the end:"
         )
@@ -12,8 +14,9 @@ module Bisect
           to_a
         return if items.empty?
 
+        finder, printer = FinderPicker.pick_finder(mode, trust, items)
         begin
-          item, index = mode.find(items) do |its|
+          item, index = finder.find do |its|
             its = [its] unless its.is_a?(Array)
 
             stdout.puts(its.size > 1 ?
